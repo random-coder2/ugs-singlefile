@@ -1,342 +1,514 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Custom UGS Files</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGS Custom - Game Library</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #2e3244 0%, #36224b 100%);
-            min-height: 100vh;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
             display: flex;
         }
-
+        
+        /* Sidebar */
         .sidebar {
             position: fixed;
             left: 0;
             top: 0;
-            width: 80px;
+            width: 70px;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            padding: 20px 10px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            padding: 10px 5px;
+            gap: 6px;
             overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
-            z-index: 1000;
+            z-index: 100;
         }
-
+        
         .sidebar::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-        }
-
+        
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
-            border-radius: 3px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
         }
-
-        .sidebar-btn {
-            background: rgb(89, 134, 218);
+        
+        .nav-btn {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
             border: none;
-            padding: 12px;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             font-size: 18px;
-            font-weight: 700;
-            border-radius: 8px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: white;
-            text-align: center;
-            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
         }
-
-        .sidebar-btn:hover {
-            background: #79aadb;
+        
+        .nav-btn:hover {
             transform: scale(1.05);
+            background: linear-gradient(145deg, #5aa0f2, #458acd);
         }
-
-        .sidebar-btn.empty {
-            opacity: 0.4;
+        
+        .nav-btn.empty {
+            opacity: 0.3;
             cursor: default;
+            background: linear-gradient(145deg, #666, #555);
         }
-
-        .sidebar-btn.empty:hover {
+        
+        .nav-btn.empty:hover {
             transform: none;
-            background: rgb(89, 134, 218);
         }
-
-        .sidebar-btn.proxy-btn {
-            background: #e74c3c;
+        
+        .nav-btn.proxy {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
             margin-top: auto;
-            order: 999;
         }
-
-        .sidebar-btn.proxy-btn:hover {
-            background: #c0392b;
+        
+        .nav-btn.proxy:hover {
+            background: linear-gradient(145deg, #ff6b6b, #e74c3c);
         }
-
-        .main-content {
-            margin-left: 100px;
+        
+        /* Main Content */
+        .main {
+            margin-left: 70px;
             flex: 1;
-            padding: 20px;
+            padding: 30px;
+            max-width: calc(100% - 70px);
         }
-
-        h1 {
-            color: white;
+        
+        header {
             text-align: center;
             margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(90deg, #fff, #a0d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        .letter-section {
-            margin-bottom: 40px;
-            padding: 0 20px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            min-height: 100px;
-        }
-
-        .letter-section.empty {
-            opacity: 0.5;
-        }
-
-        .letter-header {
+        
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
             color: white;
-            font-size: 32px;
-            font-weight: bold;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .search-box:focus {
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        /* Games Grid */
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .game-btn {
+            background: linear-gradient(145deg, #2d3561, #232942);
+            border: 2px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-align: left;
+            word-break: break-word;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-btn::before {
+            content: '🎮';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            opacity: 0.3;
+        }
+        
+        .game-btn:hover {
+            transform: translateY(-3px);
+            border-color: #4a90e2;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+        }
+        
+        .game-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Section Headers */
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 3px solid rgba(255,255,255,0.3);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            border-bottom: 3px solid rgba(255,255,255,0.2);
+            color: #a0d2ff;
         }
-
-        .buttons-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .empty-message {
-            color: rgba(255,255,255,0.6);
-            font-style: italic;
-            text-align: center;
-            padding: 20px;
-        }
-
-        input[type="button"] {
-            background: rgb(89, 134, 218);
-            border: none;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            width: 100%;
-            max-width: 600px;
-            color: white;
-            text-align: left;
-        }
-
-        input[type="button"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            background: #79aadb;
-        }
-
-        input[type="button"]:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .proxy-section {
+        
+        /* Proxy Section */
+        .proxy-container {
             display: none;
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
         }
-
-        .proxy-section.active {
+        
+        .proxy-container.active {
             display: block;
         }
-
-        .proxy-container {
-            background: rgba(0, 0, 0, 0.3);
+        
+        .proxy-box {
+            background: rgba(0,0,0,0.3);
             backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-
-        .proxy-title {
-            color: white;
-            font-size: 28px;
-            margin-bottom: 20px;
+            border-radius: 20px;
+            padding: 40px;
             text-align: center;
         }
-
+        
         .proxy-input-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin: 30px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
+        
         .proxy-input {
             flex: 1;
             padding: 15px 20px;
             font-size: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             background: rgba(255,255,255,0.1);
             color: white;
             outline: none;
         }
-
+        
         .proxy-input::placeholder {
             color: rgba(255,255,255,0.5);
         }
-
-        .proxy-btn {
+        
+        .proxy-submit {
             padding: 15px 30px;
-            font-size: 16px;
-            font-weight: 600;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
             border: none;
-            border-radius: 8px;
-            background: #e74c3c;
             color: white;
+            border-radius: 10px;
             cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
             transition: all 0.3s ease;
         }
-
-        .proxy-btn:hover {
-            background: #c0392b;
+        
+        .proxy-submit:hover {
+            background: linear-gradient(145deg, #ff6b6b, #e74c3c);
             transform: translateY(-2px);
         }
-
+        
         .proxy-frame {
             width: 100%;
-            height: 600px;
+            height: 70vh;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             background: white;
+            margin-top: 20px;
         }
-
-        .proxy-info {
-            color: rgba(255,255,255,0.8);
-            margin-top: 15px;
+        
+        .loading {
             text-align: center;
-            font-size: 14px;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.6);
         }
-
-        .games-container {
-            display: block;
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
         }
-
-        .games-container.hidden {
-            display: none;
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 60px;
-                padding: 15px 5px;
-            }
-            .sidebar-btn {
-                padding: 8px;
-                font-size: 16px;
-            }
-            .main-content {
-                margin-left: 70px;
-            }
+        
+        .no-games {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="sidebar" id="sidebar">
-        <button class="sidebar-btn proxy-btn" onclick="showProxy()">🌐</button>
-    </div>
-
-    <div class="main-content">
-        <h1>Custom UGS Files</h1>
-        <h2 style="color: white; text-align: center; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-weight: normal; font-size: 18px;">
-            <input type="text" placeholder="Search..." id="searchInput" style="padding: 13px; width: 100%; max-width: 420px; border-radius: 8px; border: none; box-shadow: 0 2px 4px rgba(7, 105, 218, 0.1);">
-        </h2>
-
-        <!-- Games Section -->
-        <div class="games-container" id="gamesContainer">
-            <div id="sections-container"></div>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <button class="nav-btn proxy" onclick="showProxy()" title="Web Proxy">🌐</button>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main">
+        <header>
+            <h1>🎮 Custom UGS Files</h1>
+            <input type="text" class="search-box" id="searchInput" placeholder="Search games...">
+        </header>
+        
+        <!-- Games View -->
+        <div id="gamesView">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>Loading games...</div>
+            </div>
+            <div id="gamesContainer"></div>
         </div>
-
-        <!-- Proxy Section -->
-        <div class="proxy-section" id="proxySection">
-            <div class="proxy-container">
-                <h2 class="proxy-title">🌐 Web Proxy</h2>
+        
+        <!-- Proxy View -->
+        <div class="proxy-container" id="proxyView">
+            <div class="proxy-box">
+                <h2>🌐 Web Proxy</h2>
+                <p style="color: rgba(255,255,255,0.7); margin-top: 10px;">Browse the web securely</p>
                 <div class="proxy-input-group">
-                    <input type="text" class="proxy-input" id="proxyUrl" placeholder="Enter URL (e.g., google.com, youtube.com)...">
-                    <button class="proxy-btn" onclick="loadProxy()">Go</button>
+                    <input type="text" class="proxy-input" id="proxyUrl" placeholder="Enter URL (e.g., google.com)...">
+                    <button class="proxy-submit" onclick="loadProxy()">Go</button>
                 </div>
-                <iframe class="proxy-frame" id="proxyFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"></iframe>
-                <p class="proxy-info">Powered by Scramjet | Browse securely and anonymously</p>
+                <iframe class="proxy-frame" id="proxyFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
             </div>
         </div>
-    </div>
-
-    <!-- Load games.js -->
-    <script src="games.js"></script>
-
-    <!-- Load searchbut.js -->
-    <script src="searchbut.js"></script>
-
-    <!-- Proxy functionality -->
+    </main>
+    
     <script>
-        function showProxy() {
-            const gamesContainer = document.getElementById('gamesContainer');
-            const proxySection = document.getElementById('proxySection');
-            const sectionsContainer = document.getElementById('sections-container');
-
-            if (proxySection.classList.contains('active')) {
-                proxySection.classList.remove('active');
-                gamesContainer.classList.remove('hidden');
-                sectionsContainer.style.display = 'block';
-            } else {
-                proxySection.classList.add('active');
-                gamesContainer.classList.add('hidden');
-                sectionsContainer.style.display = 'none';
+        // Game list - embedded for reliability
+        const games = [
+            // Original 3
+            "cl8ballpool", "clbabeltower", "clcookieclicker",
+            // Eaglercraft
+            "clEaglercraftL_19_v0_7_0_Offline_Signed", "cleaglercraft152",
+            "clEaglercraft-Beta-1.3-Offline", "clEaglercraft-Alpha-126-Offline",
+            // Casual/Puzzle
+            "cl2048", "clfamidash", "clgeometrydashscratch",
+            // Clicker/Idle
+            "clcapybaraclicker", "clspacebarclicker", "clbitlife",
+            // Action
+            "clhobo", "clhobo2", "clhobo3", "clhobo4", "clhobo5", "clhobo6", "clhobo7",
+            "clamongus", "clbalatrogba", "clhollowknight",
+            "cldefendyournuts", "cldefendyournuts2", "cldrivemady",
+            "clmonkeymart", "clgoodmonkeymart",
+            // Sports
+            "clFIFA10", "clFIFA11",
+            "clsubwaysurferssanfrancisco", "clsubwaysurfersnewyork", "clsubwaysurferslondon",
+            "clbasketrandom", "clbasketrandomgood",
+            // Horror
+            "clFNAF", "clFNAF2", "clFNAF3", "clFNAF4", "clfivenightsatepsteins",
+            // Tower Defense
+            "clbloonsTD1", "clbloonsTD2", "clbloonsTD3", "clbloonsTD4", "clbloonsTD5",
+            "clbloonsTD6scratch", "clBTD1", "clbtd5",
+            // Duck/Ragdoll
+            "clducklife", "clducklife2", "clducklife3", "clducklife4",
+            "clducklifebattle", "clducklifespace", "clragdollarchers",
+            // Pokemon (selected)
+            "clpokemonemerald", "clpokemonfirered", "clpokemonleafgreen",
+            "clpokemonruby", "clpokemonsapphire", "clpokeblack", "clpokewhite",
+            "clpokeheartgold", "clpokesoulsilver", "clpokediamond", "clpokepearl",
+            "clpokeplatinum", "clpokemonunbound", "clpokemonradicalred",
+            "clpoketcg1", "clpoketcg2", "clpokemonstadium", "clpokemonstadium2",
+            // Other
+            "clblackjack", "clsoundboard"
+        ];
+        
+        const allChars = ['0','1','2','3','4','5','6','7','8','9',
+                         'A','B','C','D','E','F','G','H','I','J',
+                         'K','L','M','N','O','P','Q','R','S','T',
+                         'U','V','W','X','Y','Z'];
+        
+        let gamesByChar = {};
+        
+        // Initialize
+        function init() {
+            // Sort games by first letter after 'cl'
+            allChars.forEach(char => gamesByChar[char] = []);
+            
+            games.forEach(game => {
+                const afterCl = game.substring(2).toLowerCase();
+                if (afterCl.length > 0) {
+                    const firstChar = afterCl[0].toUpperCase();
+                    if (gamesByChar[firstChar]) {
+                        gamesByChar[firstChar].push(game);
+                    }
+                }
+            });
+            
+            renderSidebar();
+            renderGames();
+            
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // Render sidebar
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const proxyBtn = sidebar.querySelector('.proxy');
+            
+            allChars.forEach(char => {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn' + (gamesByChar[char].length === 0 ? ' empty' : '');
+                btn.textContent = char;
+                btn.onclick = () => scrollToSection(char);
+                sidebar.insertBefore(btn, proxyBtn);
+            });
+        }
+        
+        // Render games
+        function renderGames() {
+            const container = document.getElementById('gamesContainer');
+            container.innerHTML = '';
+            
+            allChars.forEach(char => {
+                if (gamesByChar[char].length === 0) return;
+                
+                const section = document.createElement('div');
+                section.className = 'section';
+                section.id = 'section-' + char;
+                
+                const title = document.createElement('h2');
+                title.className = 'section-title';
+                title.textContent = char;
+                section.appendChild(title);
+                
+                const grid = document.createElement('div');
+                grid.className = 'games-container';
+                
+                gamesByChar[char].forEach(game => {
+                    const btn = document.createElement('button');
+                    btn.className = 'game-btn';
+                    btn.textContent = game;
+                    btn.onclick = () => loadGame(game);
+                    grid.appendChild(btn);
+                });
+                
+                section.appendChild(grid);
+                container.appendChild(section);
+            });
+        }
+        
+        // Scroll to section
+        function scrollToSection(char) {
+            showGames();
+            const section = document.getElementById('section-' + char);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
-
+        
+        // Load game
+        function loadGame(gameName) {
+            const encoded = encodeURIComponent(gameName + '.html');
+            const url = `https://cdn.jsdelivr.net/gh/random-coder2/ugs-singlefile/UGS-Files/${encoded}`;
+            
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
+                    const win = window.open('about:blank', '_blank');
+                    if (win) {
+                        win.document.open();
+                        win.document.write(html);
+                        win.document.close();
+                    }
+                })
+                .catch(err => {
+                    alert('Failed to load game: ' + err.message);
+                });
+        }
+        
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const search = e.target.value.toLowerCase();
+            const buttons = document.querySelectorAll('.game-btn');
+            const sections = document.querySelectorAll('.section');
+            
+            buttons.forEach(btn => {
+                const text = btn.textContent.toLowerCase();
+                btn.style.display = text.includes(search) ? 'block' : 'none';
+            });
+            
+            sections.forEach(section => {
+                const visible = section.querySelectorAll('.game-btn:not([style*="none"])');
+                section.style.display = visible.length > 0 ? 'block' : 'none';
+            });
+        });
+        
+        // Proxy functions
+        function showProxy() {
+            document.getElementById('gamesView').style.display = 'none';
+            document.getElementById('proxyView').classList.add('active');
+        }
+        
+        function showGames() {
+            document.getElementById('gamesView').style.display = 'block';
+            document.getElementById('proxyView').classList.remove('active');
+        }
+        
         function loadProxy() {
-            const urlInput = document.getElementById('proxyUrl');
-            const proxyFrame = document.getElementById('proxyFrame');
-            let url = urlInput.value.trim();
-
+            const url = document.getElementById('proxyUrl').value.trim();
             if (!url) {
                 alert('Please enter a URL');
                 return;
             }
-
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
-
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-            proxyFrame.src = proxyUrl;
+            
+            const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(fullUrl)}`;
+            document.getElementById('proxyFrame').src = proxyUrl;
         }
-
-        document.getElementById('proxyUrl')?.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                loadProxy();
-            }
-        });
+        
+        // Initialize on load
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
