@@ -1,156 +1,853 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>UGS Custom</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGS Games - Free Game Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amazon+Ember:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:Arial,sans-serif;background:#1a1a2e;color:#fff;display:flex;height:100vh}
-        .sidebar{width:70px;height:100vh;background:rgba(0,0,0,.4);padding:10px 5px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
-        .nav-btn{width:50px;height:50px;border:none;border-radius:10px;background:#4a90e2;color:#fff;font-weight:bold;cursor:pointer}
-        .nav-btn:hover{background:#5aa0f2}
-        .nav-btn.empty{opacity:.3;background:#666}
-        .main{flex:1;padding:20px;overflow-y:auto}
-        h1{text-align:center;margin-bottom:20px}
-        .search{width:100%;max-width:400px;padding:12px;border-radius:20px;border:none;margin:0 auto 20px;display:block}
-        .section{margin-bottom:30px}
-        .section h2{border-bottom:2px solid #4a90e2;padding-bottom:10px;margin-bottom:15px}
-        .games{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-        .game-btn{padding:15px;background:#2d3561;border:1px solid #4a90e2;border-radius:10px;color:#fff;cursor:pointer;text-align:left}
-        .game-btn:hover{background:#4a90e2}
-        .loading{text-align:center;padding:50px;font-size:20px}
-        .proxy-view{display:none}
-        .proxy-view.active{display:block}
-        .proxy-box{background:rgba(0,0,0,.3);padding:30px;border-radius:15px;text-align:center}
-        .proxy-input{display:flex;gap:10px;max-width:600px;margin:20px auto}
-        .proxy-input input{flex:1;padding:12px;border-radius:8px;border:none}
-        .proxy-input button{padding:12px 24px;background:#e74c3c;border:none;border-radius:8px;color:#fff;cursor:pointer}
-        iframe{width:100%;height:70vh;border:none;border-radius:10px;background:#fff}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Amazon Ember', Arial, sans-serif;
+            background: #eaeded;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: #131921;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            color: #fff;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo span {
+            color: #febd69;
+        }
+        
+        .search-bar {
+            flex: 1;
+            display: flex;
+            max-width: 800px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .search-bar button {
+            background: #febd69;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .header-links {
+            display: flex;
+            gap: 20px;
+            color: #fff;
+        }
+        
+        .header-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        
+        .header-link:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .header-link small {
+            display: block;
+            font-size: 12px;
+            color: #ccc;
+        }
+        
+        .cart {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        /* Sub Navigation */
+        .sub-nav {
+            background: #232f3e;
+            padding: 8px 20px;
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+        
+        .sub-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        
+        .sub-nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+        }
+        
+        /* Main Content */
+        .main {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(135deg, #232f3e 0%, #37475a 100%);
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 30px;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: #febd69;
+            margin-bottom: 25px;
+        }
+        
+        .hero-btn {
+            background: #febd69;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .hero-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Category Section */
+        .category-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .category-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0f1111;
+        }
+        
+        .see-all {
+            color: #007185;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .see-all:hover {
+            color: #c7511f;
+        }
+        
+        /* Game Grid */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Game Card */
+        .game-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .game-image {
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .game-info {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .game-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #0f1111;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .game-developer {
+            font-size: 13px;
+            color: #565959;
+            margin-bottom: 8px;
+        }
+        
+        .game-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .stars {
+            color: #ffa41c;
+        }
+        
+        .rating-count {
+            font-size: 13px;
+            color: #007185;
+        }
+        
+        .game-price {
+            margin-top: auto;
+        }
+        
+        .price-original {
+            text-decoration: line-through;
+            color: #565959;
+            font-size: 14px;
+        }
+        
+        .price-current {
+            font-size: 28px;
+            font-weight: bold;
+            color: #b12704;
+        }
+        
+        .price-note {
+            font-size: 12px;
+            color: #565959;
+        }
+        
+        .prime-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: #00a8e1;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .buy-btn {
+            background: #ffd814;
+            border: 1px solid #fcd200;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        
+        .buy-btn:hover {
+            background: #f7ca00;
+        }
+        
+        /* Cart Badge */
+        .cart-count {
+            background: #f08804;
+            color: #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            position: relative;
+            top: -8px;
+            left: -5px;
+        }
+        
+        /* Categories Sidebar */
+        .sidebar-categories {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .category-tag {
+            background: #f3f3f3;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #0f1111;
+            font-size: 14px;
+            transition: background 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .category-tag:hover {
+            background: #febd69;
+        }
+        
+        /* Proxy Modal */
+        .proxy-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .proxy-modal.active {
+            display: flex;
+        }
+        
+        .proxy-content {
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            width: 90%;
+            max-width: 900px;
+            height: 80vh;
+        }
+        
+        .proxy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .proxy-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .proxy-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cdcdcd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .proxy-input button {
+            background: #febd69;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .proxy-frame {
+            width: 100%;
+            height: calc(100% - 100px);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+        
+        /* Free Tag */
+        .free-tag {
+            background: #b12704;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #232f3e;
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .footer-back {
+            background: #37475a;
+            padding: 15px;
+            margin: -40px -20px 30px;
+            cursor: pointer;
+        }
+        
+        .footer-back:hover {
+            background: #485769;
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar" id="sidebar"></div>
-    <div class="main">
-        <h1>UGS Custom Games</h1>
-        <input type="text" class="search" id="search" placeholder="Search games...">
-        <div id="gamesView">
-            <div class="loading" id="loading">Loading...</div>
-            <div id="container"></div>
+    <!-- Header -->
+    <header class="header">
+        <a href="#" class="logo">
+            <span>🎮</span> UGS<span>Games</span>
+        </a>
+        
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for games...">
+            <button onclick="searchGames()">🔍</button>
         </div>
-        <div class="proxy-view" id="proxyView">
-            <div class="proxy-box">
-                <h2>Web Proxy</h2>
-                <div class="proxy-input">
-                    <input type="text" id="proxyUrl" placeholder="Enter URL...">
-                    <button onclick="loadProxy()">Go</button>
-                </div>
-                <iframe id="proxyFrame"></iframe>
+        
+        <div class="header-links">
+            <a href="#" class="header-link" onclick="showProxy()">
+                <small>Web</small>
+                <span>Proxy</span>
+            </a>
+            <a href="#" class="header-link">
+                <small>Returns</small>
+                <span>& Orders</span>
+            </a>
+            <a href="#" class="cart" onclick="showCart()">
+                <span style="font-size: 28px;">🛒</span>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
+    
+    <!-- Sub Navigation -->
+    <nav class="sub-nav">
+        <a href="#" class="menu-btn" onclick="showAllGames()">☰ All Games</a>
+        <a href="#" onclick="filterCategory('eaglercraft')">Eaglercraft</a>
+        <a href="#" onclick="filterCategory('action')">Action</a>
+        <a href="#" onclick="filterCategory('sports')">Sports</a>
+        <a href="#" onclick="filterCategory('horror')">Horror</a>
+        <a href="#" onclick="filterCategory('pokemon')">Pokémon</a>
+        <a href="#" onclick="filterCategory('puzzle')">Puzzle</a>
+        <a href="#" onclick="filterCategory('clicker')">Clicker</a>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Banner -->
+        <div class="hero">
+            <h1>Welcome to UGS Games Store</h1>
+            <p>All games are 100% FREE - Play instantly, no purchase required!</p>
+            <button class="hero-btn" onclick="scrollToGames()">Browse Free Games →</button>
+        </div>
+        
+        <!-- Categories -->
+        <div class="sidebar-categories">
+            <div class="sidebar-title">Browse by Category</div>
+            <div class="category-list">
+                <button class="category-tag" onclick="filterCategory('all')">All Games</button>
+                <button class="category-tag" onclick="filterCategory('eaglercraft')">🎮 Minecraft</button>
+                <button class="category-tag" onclick="filterCategory('action')">⚔️ Action</button>
+                <button class="category-tag" onclick="filterCategory('sports')">🏆 Sports</button>
+                <button class="category-tag" onclick="filterCategory('horror')">👻 Horror</button>
+                <button class="category-tag" onclick="filterCategory('pokemon')">🎯 Pokémon</button>
+                <button class="category-tag" onclick="filterCategory('puzzle')">🧩 Puzzle</button>
+                <button class="category-tag" onclick="filterCategory('clicker')">🖱️ Clicker</button>
+                <button class="category-tag" onclick="filterCategory('towerdefense')">🏰 Tower Defense</button>
+                <button class="category-tag" onclick="filterCategory('duck')">🦆 Duck Life</button>
             </div>
         </div>
+        
+        <!-- Featured Games -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2 class="category-title">Featured Free Games</h2>
+                <a href="#" class="see-all" onclick="showAllGames()">See all</a>
+            </div>
+            <div class="game-grid" id="gameGrid">
+                <!-- Games will be injected here -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-back" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Back to top</div>
+        <p>© 2024 UGS Games Store. All games are free to play.</p>
+    </footer>
+    
+    <!-- Proxy Modal -->
+    <div class="proxy-modal" id="proxyModal">
+        <div class="proxy-content">
+            <div class="proxy-header">
+                <h2>🌐 Web Proxy</h2>
+                <button class="close-btn" onclick="closeProxy()">×</button>
+            </div>
+            <div class="proxy-input">
+                <input type="text" id="proxyUrl" placeholder="Enter URL (e.g., google.com, youtube.com)...">
+                <button onclick="loadProxy()">Go</button>
+            </div>
+            <iframe class="proxy-frame" id="proxyFrame"></iframe>
+        </div>
     </div>
-<script>
-const games=["cl8ballpool","clbabeltower","clcookieclicker","cl2048","clfamidash","clgeometrydashscratch","clcapybaraclicker","clspacebarclicker","clbitlife","clhobo","clhobo2","clhobo3","clhobo4","clhobo5","clhobo6","clhobo7","clamongus","clbalatrogba","clhollowknight","cldefendyournuts","cldefendyournuts2","cldrivemady","clmonkeymart","clgoodmonkeymart","clFIFA10","clFIFA11","clsubwaysurferssanfrancisco","clsubwaysurfersnewyork","clsubwaysurferslondon","clbasketrandom","clbasketrandomgood","clFNAF","clFNAF2","clFNAF3","clFNAF4","clfivenightsatepsteins","clbloonsTD1","clbloonsTD2","clbloonsTD3","clbloonsTD4","clbloonsTD5","clbloonsTD6scratch","clBTD1","clbtd5","clducklife","clducklife2","clducklife3","clducklife4","clducklifebattle","clducklifespace","clragdollarchers","clpokemonemerald","clpokemonfirered","clpokemonleafgreen","clpokemonruby","clpokemonsapphire","clpokeblack","clpokewhite","clpokeheartgold","clpokesoulsilver","clpokediamond","clpokepearl","clpokeplatinum","clpokemonunbound","clpokemonradicalred","clpoketcg1","clpoketcg2","clpokemonstadium","clpokemonstadium2","clblackjack","clsoundboard","clEaglercraftL_19_v0_7_0_Offline_Signed","cleaglercraft152"];
-const chars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-let byChar={};
-
-function init(){
-    try{
-        chars.forEach(c=>byChar[c]=[]);
-        games.forEach(g=>{
-            const after=g.substring(2);
-            if(after){
-                const c=after[0].toUpperCase();
-                if(byChar[c])byChar[c].push(g);
+    
+    <script>
+        // Game data with metadata
+        const gamesData = [
+            // Eaglercraft (Minecraft)
+            { id: "clEaglercraftL_19_v0_7_0_Offline_Signed", name: "Eaglercraft 1.19 - Tuff Client", category: "eaglercraft", emoji: "⛏️", rating: 4.9, reviews: 15420, originalPrice: 29.99 },
+            { id: "cleaglercraft152", name: "Eaglercraft 1.5.2", category: "eaglercraft", emoji: "⛏️", rating: 4.8, reviews: 8930, originalPrice: 19.99 },
+            { id: "clEaglercraft-Beta-1.3-Offline", name: "Eaglercraft Beta 1.3", category: "eaglercraft", emoji: "⛏️", rating: 4.7, reviews: 6230, originalPrice: 14.99 },
+            { id: "clEaglercraft-Alpha-126-Offline", name: "Eaglercraft Alpha 1.26", category: "eaglercraft", emoji: "⛏️", rating: 4.6, reviews: 4120, originalPrice: 9.99 },
+            
+            // Original 3
+            { id: "cl8ballpool", name: "8 Ball Pool", category: "sports", emoji: "🎱", rating: 4.5, reviews: 3210, originalPrice: 4.99 },
+            { id: "clbabeltower", name: "Babel Tower", category: "puzzle", emoji: "🏗️", rating: 4.3, reviews: 1890, originalPrice: 3.99 },
+            { id: "clcookieclicker", name: "Cookie Clicker", category: "clicker", emoji: "🍪", rating: 4.7, reviews: 5670, originalPrice: 2.99 },
+            
+            // Casual/Puzzle
+            { id: "cl2048", name: "2048", category: "puzzle", emoji: "🔢", rating: 4.4, reviews: 2340, originalPrice: 1.99 },
+            { id: "clfamidash", name: "Famidash", category: "puzzle", emoji: "🎵", rating: 4.2, reviews: 1230, originalPrice: 4.99 },
+            { id: "clgeometrydashscratch", name: "Geometry Dash", category: "puzzle", emoji: "🎵", rating: 4.8, reviews: 8900, originalPrice: 4.99 },
+            
+            // Clicker/Idle
+            { id: "clcapybaraclicker", name: "Capybara Clicker", category: "clicker", emoji: "🦫", rating: 4.5, reviews: 3450, originalPrice: 2.99 },
+            { id: "clspacebarclicker", name: "Spacebar Clicker", category: "clicker", emoji: "⌨️", rating: 4.1, reviews: 2100, originalPrice: 1.99 },
+            { id: "clbitlife", name: "BitLife", category: "clicker", emoji: "👤", rating: 4.6, reviews: 6780, originalPrice: 0.99 },
+            
+            // Action
+            { id: "clhobo", name: "Hobo", category: "action", emoji: "👊", rating: 4.3, reviews: 2900, originalPrice: 4.99 },
+            { id: "clhobo2", name: "Hobo 2", category: "action", emoji: "👊", rating: 4.4, reviews: 3100, originalPrice: 4.99 },
+            { id: "clhobo3", name: "Hobo 3", category: "action", emoji: "👊", rating: 4.5, reviews: 3300, originalPrice: 4.99 },
+            { id: "clhobo4", name: "Hobo 4", category: "action", emoji: "👊", rating: 4.4, reviews: 3200, originalPrice: 4.99 },
+            { id: "clhobo5", name: "Hobo 5", category: "action", emoji: "👊", rating: 4.3, reviews: 2800, originalPrice: 4.99 },
+            { id: "clhobo6", name: "Hobo 6", category: "action", emoji: "👊", rating: 4.5, reviews: 3500, originalPrice: 4.99 },
+            { id: "clhobo7", name: "Hobo 7", category: "action", emoji: "👊", rating: 4.6, reviews: 3800, originalPrice: 4.99 },
+            { id: "clamongus", name: "Among Us", category: "action", emoji: "🚀", rating: 4.7, reviews: 12500, originalPrice: 4.99 },
+            { id: "clbalatrogba", name: "Balatro", category: "action", emoji: "🃏", rating: 4.9, reviews: 8900, originalPrice: 14.99 },
+            { id: "clhollowknight", name: "Hollow Knight", category: "action", emoji: "🗡️", rating: 4.9, reviews: 15600, originalPrice: 14.99 },
+            { id: "cldefendyournuts", name: "Defend Your Nuts", category: "action", emoji: "🐿️", rating: 4.4, reviews: 2100, originalPrice: 2.99 },
+            { id: "cldefendyournuts2", name: "Defend Your Nuts 2", category: "action", emoji: "🐿️", rating: 4.5, reviews: 2400, originalPrice: 3.99 },
+            { id: "cldrivemady", name: "Drive Mad", category: "action", emoji: "🏎️", rating: 4.2, reviews: 1800, originalPrice: 2.99 },
+            { id: "clmonkeymart", name: "Monkey Mart", category: "action", emoji: "🐒", rating: 4.6, reviews: 4500, originalPrice: 4.99 },
+            { id: "clgoodmonkeymart", name: "Good Monkey Mart", category: "action", emoji: "🐵", rating: 4.5, reviews: 3200, originalPrice: 4.99 },
+            
+            // Sports
+            { id: "clFIFA10", name: "FIFA 10", category: "sports", emoji: "⚽", rating: 4.5, reviews: 5600, originalPrice: 49.99 },
+            { id: "clFIFA11", name: "FIFA 11", category: "sports", emoji: "⚽", rating: 4.6, reviews: 6200, originalPrice: 49.99 },
+            { id: "clsubwaysurferssanfrancisco", name: "Subway Surfers SF", category: "sports", emoji: "🏃", rating: 4.4, reviews: 8900, originalPrice: 0.99 },
+            { id: "clsubwaysurfersnewyork", name: "Subway Surfers NY", category: "sports", emoji: "🏃", rating: 4.5, reviews: 9200, originalPrice: 0.99 },
+            { id: "clsubwaysurferslondon", name: "Subway Surfers London", category: "sports", emoji: "🏃", rating: 4.3, reviews: 7800, originalPrice: 0.99 },
+            { id: "clbasketrandom", name: "Basket Random", category: "sports", emoji: "🏀", rating: 4.4, reviews: 3400, originalPrice: 1.99 },
+            { id: "clbasketrandomgood", name: "Basket Random Pro", category: "sports", emoji: "🏀", rating: 4.5, reviews: 3800, originalPrice: 2.99 },
+            
+            // Horror
+            { id: "clFNAF", name: "Five Nights at Freddy's", category: "horror", emoji: "🐻", rating: 4.8, reviews: 8900, originalPrice: 4.99 },
+            { id: "clFNAF2", name: "FNAF 2", category: "horror", emoji: "🐻", rating: 4.7, reviews: 7800, originalPrice: 4.99 },
+            { id: "clFNAF3", name: "FNAF 3", category: "horror", emoji: "🐻", rating: 4.6, reviews: 6500, originalPrice: 4.99 },
+            { id: "clFNAF4", name: "FNAF 4", category: "horror", emoji: "🐻", rating: 4.7, reviews: 7200, originalPrice: 4.99 },
+            { id: "clfivenightsatepsteins", name: "Five Nights at Epstein's", category: "horror", emoji: "🏝️", rating: 3.9, reviews: 1200, originalPrice: 0.00 },
+            
+            // Tower Defense
+            { id: "clbloonsTD1", name: "Bloons TD 1", category: "towerdefense", emoji: "🎈", rating: 4.4, reviews: 4500, originalPrice: 2.99 },
+            { id: "clbloonsTD2", name: "Bloons TD 2", category: "towerdefense", emoji: "🎈", rating: 4.5, reviews: 5200, originalPrice: 2.99 },
+            { id: "clbloonsTD3", name: "Bloons TD 3", category: "towerdefense", emoji: "🎈", rating: 4.6, reviews: 6100, originalPrice: 4.99 },
+            { id: "clbloonsTD4", name: "Bloons TD 4", category: "towerdefense", emoji: "🎈", rating: 4.7, reviews: 7800, originalPrice: 4.99 },
+            { id: "clbloonsTD5", name: "Bloons TD 5", category: "towerdefense", emoji: "🎈", rating: 4.8, reviews: 9200, originalPrice: 9.99 },
+            { id: "clbloonsTD6scratch", name: "Bloons TD 6", category: "towerdefense", emoji: "🎈", rating: 4.9, reviews: 11500, originalPrice: 14.99 },
+            
+            // Duck
+            { id: "clducklife", name: "Duck Life", category: "duck", emoji: "🦆", rating: 4.5, reviews: 5600, originalPrice: 2.99 },
+            { id: "clducklife2", name: "Duck Life 2", category: "duck", emoji: "🦆", rating: 4.6, reviews: 6200, originalPrice: 2.99 },
+            { id: "clducklife3", name: "Duck Life 3", category: "duck", emoji: "🦆", rating: 4.7, reviews: 7100, originalPrice: 3.99 },
+            { id: "clducklife4", name: "Duck Life 4", category: "duck", emoji: "🦆", rating: 4.6, reviews: 6800, originalPrice: 3.99 },
+            { id: "clducklifebattle", name: "Duck Life: Battle", category: "duck", emoji: "🥊", rating: 4.4, reviews: 4200, originalPrice: 3.99 },
+            { id: "clducklifespace", name: "Duck Life: Space", category: "duck", emoji: "🚀", rating: 4.5, reviews: 4800, originalPrice: 3.99 },
+            { id: "clragdollarchers", name: "Ragdoll Archers", category: "duck", emoji: "🏹", rating: 4.6, reviews: 5400, originalPrice: 2.99 },
+            
+            // Pokemon
+            { id: "clpokemonemerald", name: "Pokémon Emerald", category: "pokemon", emoji: "💎", rating: 4.9, reviews: 15600, originalPrice: 39.99 },
+            { id: "clpokemonfirered", name: "Pokémon FireRed", category: "pokemon", emoji: "🔥", rating: 4.8, reviews: 14200, originalPrice: 39.99 },
+            { id: "clpokemonleafgreen", name: "Pokémon LeafGreen", category: "pokemon", emoji: "🍃", rating: 4.8, reviews: 13800, originalPrice: 39.99 },
+            { id: "clpokemonruby", name: "Pokémon Ruby", category: "pokemon", emoji: "❤️", rating: 4.7, reviews: 12500, originalPrice: 39.99 },
+            { id: "clpokemonsapphire", name: "Pokémon Sapphire", category: "pokemon", emoji: "💙", rating: 4.7, reviews: 12300, originalPrice: 39.99 },
+            { id: "clpokeblack", name: "Pokémon Black", category: "pokemon", emoji: "⚫", rating: 4.8, reviews: 13400, originalPrice: 39.99 },
+            { id: "clpokewhite", name: "Pokémon White", category: "pokemon", emoji: "⚪", rating: 4.8, reviews: 13600, originalPrice: 39.99 },
+            { id: "clpokeheartgold", name: "Pokémon HeartGold", category: "pokemon", emoji: "💛", rating: 4.9, reviews: 14800, originalPrice: 39.99 },
+            { id: "clpokesoulsilver", name: "Pokémon SoulSilver", category: "pokemon", emoji: "🤍", rating: 4.9, reviews: 14500, originalPrice: 39.99 },
+            { id: "clpokediamond", name: "Pokémon Diamond", category: "pokemon", emoji: "💎", rating: 4.8, reviews: 13900, originalPrice: 39.99 },
+            { id: "clpokepearl", name: "Pokémon Pearl", category: "pokemon", emoji: "⚪", rating: 4.7, reviews: 13200, originalPrice: 39.99 },
+            { id: "clpokeplatinum", name: "Pokémon Platinum", category: "pokemon", emoji: "🏆", rating: 4.9, reviews: 15200, originalPrice: 39.99 },
+            { id: "clpokemonunbound", name: "Pokémon Unbound", category: "pokemon", emoji: "🌟", rating: 4.8, reviews: 8900, originalPrice: 0.00 },
+            { id: "clpokemonradicalred", name: "Pokémon Radical Red", category: "pokemon", emoji: "🔴", rating: 4.7, reviews: 7600, originalPrice: 0.00 },
+            { id: "clpoketcg1", name: "Pokémon TCG 1", category: "pokemon", emoji: "🃏", rating: 4.6, reviews: 6700, originalPrice: 29.99 },
+            { id: "clpoketcg2", name: "Pokémon TCG 2", category: "pokemon", emoji: "🃏", rating: 4.7, reviews: 7100, originalPrice: 29.99 },
+            { id: "clpokemonstadium", name: "Pokémon Stadium", category: "pokemon", emoji: "🏟️", rating: 4.5, reviews: 5800, originalPrice: 39.99 },
+            { id: "clpokemonstadium2", name: "Pokémon Stadium 2", category: "pokemon", emoji: "🏟️", rating: 4.6, reviews: 6200, originalPrice: 39.99 },
+            
+            // Other
+            { id: "clblackjack", name: "Blackjack", category: "other", emoji: "♠️", rating: 4.3, reviews: 2800, originalPrice: 0.99 },
+            { id: "clsoundboard", name: "Soundboard", category: "other", emoji: "🔊", rating: 4.1, reviews: 1500, originalPrice: 0.99 }
+        ];
+        
+        let cart = [];
+        let currentFilter = 'all';
+        
+        // Generate star rating HTML
+        function getStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalf = rating % 1 >= 0.5;
+            let html = '';
+            for (let i = 0; i < fullStars; i++) html += '★';
+            if (hasHalf) html += '½';
+            for (let i = fullStars + (hasHalf ? 1 : 0); i < 5; i++) html += '☆';
+            return html;
+        }
+        
+        // Render games
+        function renderGames(filter = 'all', searchTerm = '') {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            
+            let filtered = gamesData;
+            
+            if (filter !== 'all') {
+                filtered = filtered.filter(g => g.category === filter);
             }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(g => 
+                    g.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    g.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            
+            filtered.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div class="game-image">${game.emoji}</div>
+                    <div class="game-info">
+                        <div class="free-tag">FREE</div>
+                        <div class="game-title">${game.name}</div>
+                        <div class="game-developer">${game.category.charAt(0).toUpperCase() + game.category.slice(1)} Game</div>
+                        <div class="game-rating">
+                            <span class="stars">${getStars(game.rating)}</span>
+                            <span class="rating-count">${game.reviews.toLocaleString()}</span>
+                        </div>
+                        <div class="game-price">
+                            <div class="price-original">$${game.originalPrice.toFixed(2)}</div>
+                            <div class="price-current">$0.00</div>
+                            <div class="price-note">FREE to play • Instant access</div>
+                        </div>
+                        <div class="prime-badge">⚡ Prime</div>
+                        <button class="buy-btn" onclick="playGame('${game.id}', '${game.name}')">🎮 Play Now</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 50px; color: #666;">No games found. Try a different search!</div>';
+            }
+        }
+        
+        // Play game
+        function playGame(id, name) {
+            addToCart(name);
+            const url = `https://cdn.jsdelivr.net/gh/random-coder2/ugs-singlefile/UGS-Files/${encodeURIComponent(id + '.html')}`;
+            fetch(url)
+                .then(r => r.text())
+                .then(html => {
+                    const w = window.open('about:blank', '_blank');
+                    if (w) {
+                        w.document.open();
+                        w.document.write(html);
+                        w.document.close();
+                    }
+                })
+                .catch(e => alert('Failed to load: ' + e.message));
+        }
+        
+        // Add to cart
+        function addToCart(name) {
+            cart.push(name);
+            document.getElementById('cartCount').textContent = cart.length;
+        }
+        
+        // Show cart
+        function showCart() {
+            if (cart.length === 0) {
+                alert('Your cart is empty! Add some free games!');
+            } else {
+                alert(`Cart (${cart.length} items):\n${cart.join('\n')}\n\nAll games are FREE!`);
+            }
+        }
+        
+        // Filter category
+        function filterCategory(category) {
+            currentFilter = category;
+            renderGames(category);
+            document.querySelector('.category-title').textContent = 
+                category === 'all' ? 'Featured Free Games' : 
+                category.charAt(0).toUpperCase() + category.slice(1) + ' Games';
+        }
+        
+        // Show all games
+        function showAllGames() {
+            filterCategory('all');
+        }
+        
+        // Search games
+        function searchGames() {
+            const term = document.getElementById('searchInput').value;
+            renderGames(currentFilter, term);
+        }
+        
+        // Enter key search
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchGames();
         });
-        renderSidebar();
-        renderGames();
-        document.getElementById("loading").style.display="none";
-    }catch(e){
-        console.error("Init error:",e);
-        document.getElementById("loading").textContent="Error: "+e.message;
-    }
-}
-
-function renderSidebar(){
-    const sb=document.getElementById("sidebar");
-    chars.forEach(c=>{
-        const btn=document.createElement("button");
-        btn.className="nav-btn"+(byChar[c].length?"":" empty");
-        btn.textContent=c;
-        btn.onclick=()=>scrollTo(c);
-        sb.appendChild(btn);
-    });
-    const proxy=document.createElement("button");
-    proxy.className="nav-btn";
-    proxy.textContent="🌐";
-    proxy.onclick=()=>showProxy();
-    proxy.style.marginTop="auto";
-    sb.appendChild(proxy);
-}
-
-function renderGames(){
-    const cont=document.getElementById("container");
-    chars.forEach(c=>{
-        if(!byChar[c].length)return;
-        const sec=document.createElement("div");
-        sec.className="section";
-        sec.id="sec-"+c;
-        const h2=document.createElement("h2");
-        h2.textContent=c;
-        sec.appendChild(h2);
-        const grid=document.createElement("div");
-        grid.className="games";
-        byChar[c].forEach(g=>{
-            const b=document.createElement("button");
-            b.className="game-btn";
-            b.textContent=g;
-            b.onclick=()=>playGame(g);
-            grid.appendChild(b);
+        
+        // Scroll to games
+        function scrollToGames() {
+            document.querySelector('.category-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Proxy functions
+        function showProxy() {
+            document.getElementById('proxyModal').classList.add('active');
+        }
+        
+        function closeProxy() {
+            document.getElementById('proxyModal').classList.remove('active');
+        }
+        
+        function loadProxy() {
+            const url = document.getElementById('proxyUrl').value.trim();
+            if (!url) {
+                alert('Please enter a URL');
+                return;
+            }
+            const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+            document.getElementById('proxyFrame').src = 
+                'https://api.allorigins.win/raw?url=' + encodeURIComponent(fullUrl);
+        }
+        
+        // Close modal on outside click
+        document.getElementById('proxyModal').addEventListener('click', (e) => {
+            if (e.target.id === 'proxyModal') closeProxy();
         });
-        sec.appendChild(grid);
-        cont.appendChild(sec);
-    });
-}
-
-function scrollTo(c){
-    showGames();
-    const el=document.getElementById("sec-"+c);
-    if(el)el.scrollIntoView({behavior:"smooth"});
-}
-
-function playGame(g){
-    const url="https://cdn.jsdelivr.net/gh/random-coder2/ugs-singlefile/UGS-Files/"+encodeURIComponent(g+".html");
-    fetch(url).then(r=>r.text()).then(html=>{
-        const w=window.open("about:blank","_blank");
-        if(w){w.document.open();w.document.write(html);w.document.close();}
-    }).catch(e=>alert("Failed: "+e.message));
-}
-
-function showProxy(){
-    document.getElementById("gamesView").style.display="none";
-    document.getElementById("proxyView").classList.add("active");
-}
-
-function showGames(){
-    document.getElementById("gamesView").style.display="block";
-    document.getElementById("proxyView").classList.remove("active");
-}
-
-function loadProxy(){
-    const u=document.getElementById("proxyUrl").value.trim();
-    if(!u){alert("Enter URL");return;}
-    const full=u.startsWith("http")?u:"https://"+u;
-    document.getElementById("proxyFrame").src="https://api.allorigins.win/raw?url="+encodeURIComponent(full);
-}
-
-document.getElementById("search").addEventListener("input",function(e){
-    const s=e.target.value.toLowerCase();
-    document.querySelectorAll(".game-btn").forEach(b=>{
-        b.style.display=b.textContent.toLowerCase().includes(s)?"block":"none";
-    });
-});
-
-window.addEventListener("load",init);
-</script>
+        
+        // Initial render
+        window.addEventListener('load', () => renderGames());
+    </script>
 </body>
 </html>
