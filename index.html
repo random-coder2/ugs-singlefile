@@ -816,10 +816,20 @@
             filtered.forEach(game => {
                 const card = document.createElement('div');
                 card.className = 'game-card';
+                // Generate a unique gradient for each game based on name
+                const colors = [
+                    ['#667eea', '#764ba2'], ['#f093fb', '#f5576c'], ['#4facfe', '#00f2fe'],
+                    ['#43e97b', '#38f9d7'], ['#fa709a', '#fee140'], ['#30cfd0', '#330867'],
+                    ['#a8edea', '#fed6e3'], ['#ff9a9e', '#fecfef'], ['#ffecd2', '#fcb69f'],
+                    ['#667eea', '#764ba2'], ['#11998e', '#38ef7d'], ['#fc5c7d', '#6a82fb']
+                ];
+                const colorIndex = game.name.length % colors.length;
+                const [c1, c2] = colors[colorIndex];
+                const initial = game.name.charAt(0).toUpperCase();
                 card.innerHTML = `
-                    <div class="game-image">
+                    <div class="game-image" style="background: linear-gradient(135deg, ${c1} 0%, ${c2} 100%);">
                         <div class="free-badge">FREE</div>
-                        <img src="${game.image}" alt="${game.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x300/667eea/ffffff?text=Game'" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:2;">
+                        <div style="font-size: 60px; font-weight: bold; color: rgba(255,255,255,0.9); z-index: 2; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">${initial}</div>
                     </div>
                     <div class="game-info">
                         <div class="game-title">${game.name}</div>
